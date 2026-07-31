@@ -283,7 +283,7 @@ int32_t Datacenter::getCurrentPort(uint32_t flags) {
         }
     }
     if (addresses->empty()) {
-        return 443;
+        return 2398;
     }
 
     if ((flags & TcpAddressFlagStatic) != 0) {
@@ -1505,12 +1505,12 @@ TL_help_configSimple *Datacenter::decodeSimpleConfig(NativeByteBuffer *buffer) {
 
     static std::string public_key =
             "-----BEGIN RSA PUBLIC KEY-----\n"
-                    "MIIBCgKCAQEAyr+18Rex2ohtVy8sroGPBwXD3DOoKCSpjDqYoXgCqB7ioln4eDCF\n"
-                    "fOBUlfXUEvM/fnKCpF46VkAftlb4VuPDeQSS/ZxZYEGqHaywlroVnXHIjgqoxiAd\n"
-                    "192xRGreuXIaUKmkwlM9JID9WS2jUsTpzQ91L8MEPLJ/4zrBwZua8W5fECwCCh2c\n"
-                    "9G5IzzBm+otMS/YKwmR1olzRCyEkyAEjXWqBI9Ftv5eG8m0VkBzOG655WIYdyV0H\n"
-                    "fDK/NWcvGqa0w/nriMD6mDjKOryamw0OP9QuYgMN0C9xMW9y8SmP4h92OAWodTYg\n"
-                    "Y1hZCxdv6cs5UnW9+PWvS+WIbkh+GaWYxwIDAQAB\n"
+                    "MIIBCgKCAQEAsni7cOiPcpYTl1aAr2EaltesobqkwPP7O63Wn6G389rORcRlci2M\n"
+                    "dgBuVD6abddtcbzMkcv5FOTGlkvXc5+Px1iLE3B+C39xka2w8fmt2F2TSD1sBbVF\n"
+                    "go2t+gCqHWhjWwAQcf/FIre3RI0+ZnvsIqC19e7LcK1N0XIeDLzkFHWG454jLNlG\n"
+                    "yCiY0UlCpeigJ12KJTyJGZEyEpqW9ddhKdQwWn0fYeA3o146N0Zfz51rzlBFBS7y\n"
+                    "PiIvDycuJr91qtRTYnNx4s9eiPui3QWnFKoPX6IqO1e2BHnN7G5vqaKr22srFMB1\n"
+                    "Si4GwccF22mL+Q1wKqZ+/1x+6+3ewK4ALwIDAQAB\n"
                     "-----END RSA PUBLIC KEY-----";
 
     BIO *keyBio = BIO_new(BIO_s_mem());

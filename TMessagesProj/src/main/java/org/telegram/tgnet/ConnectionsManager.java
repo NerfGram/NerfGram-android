@@ -856,44 +856,7 @@ public class ConnectionsManager extends BaseController {
     }
 
     public static void onRequestNewServerIpAndPort(final int second, final int currentAccount) {
-        Utilities.globalQueue.postRunnable(() -> {
-            boolean networkOnline = ApplicationLoader.isNetworkOnline();
-            Utilities.stageQueue.postRunnable(() -> {
-                FileLog.d("13. currentTask == " + currentTask);
-                if (currentTask != null || second == 0 && Math.abs(lastDnsRequestTime - System.currentTimeMillis()) < 10000 || !networkOnline) {
-                    if (BuildVars.LOGS_ENABLED) {
-                        FileLog.d("don't start task, current task = " + currentTask + " next task = " + second + " time diff = " + Math.abs(lastDnsRequestTime - System.currentTimeMillis()) + " network = " + ApplicationLoader.isNetworkOnline());
-                    }
-                    return;
-                }
-                lastDnsRequestTime = System.currentTimeMillis();
-                if (second == 2) {
-                    if (BuildVars.LOGS_ENABLED) {
-                        FileLog.d("start mozilla txt task");
-                    }
-                    MozillaDnsLoadTask task = new MozillaDnsLoadTask(currentAccount);
-                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
-                    FileLog.d("9. currentTask = mozilla");
-                    currentTask = task;
-                } else if (second == 1) {
-                    if (BuildVars.LOGS_ENABLED) {
-                        FileLog.d("start google txt task");
-                    }
-                    GoogleDnsLoadTask task = new GoogleDnsLoadTask(currentAccount);
-                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
-                    FileLog.d("11. currentTask = dnstxt");
-                    currentTask = task;
-                } else {
-                    if (BuildVars.LOGS_ENABLED) {
-                        FileLog.d("start firebase task");
-                    }
-                    FirebaseTask task = new FirebaseTask(currentAccount);
-                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
-                    FileLog.d("12. currentTask = firebase");
-                    currentTask = task;
-                }
-            });
-        });
+        // FluxGram: DC addresses are hardcoded in initDatacenters(); skip Telegram DNS/Firebase config fetch.
     }
 
     public static void onProxyError() {
