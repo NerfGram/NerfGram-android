@@ -11,6 +11,7 @@
 
 #include <functional>
 #include <list>
+#include <string>
 #include <limits.h>
 #include <sstream>
 #include <inttypes.h>
@@ -33,6 +34,21 @@
 #define USE_IPV4_ONLY 0
 #define USE_IPV6_ONLY 1
 #define USE_IPV4_IPV6_RANDOM 2
+
+// Self-hosted telesrv (must match TELESRV_LISTEN / TELESRV_ADVERTISE_IP on the server).
+#define TELESRV_HOST "192.168.1.3"
+#define TELESRV_PORT 2398
+
+inline bool isSelfHostedEndpoint(const std::string &host) {
+    return host == TELESRV_HOST || host.rfind("192.168.", 0) == 0 || host == "127.0.0.1" || host == "10.0.2.2";
+}
+
+inline uint32_t resolveSelfHostedPort(const std::string &host, uint32_t port) {
+    if (isSelfHostedEndpoint(host)) {
+        return TELESRV_PORT;
+    }
+    return port;
+}
 
 #define NETWORK_TYPE_MOBILE 0
 #define NETWORK_TYPE_WIFI 1

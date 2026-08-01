@@ -116,7 +116,15 @@ public class BillingController implements PurchasesUpdatedListener, BillingClien
         if ("XTR".equalsIgnoreCase(currency)) {
             return "XTR " + LocaleController.formatNumber(amount, ',');
         }
-        Currency cur = Currency.getInstance(currency);
+        if (!currency.matches("[A-Z]{3}")) {
+            return amount + " " + currency;
+        }
+        Currency cur;
+        try {
+            cur = Currency.getInstance(currency);
+        } catch (IllegalArgumentException e) {
+            return amount + " " + currency;
+        }
         if (cur != null) {
             if (currencyInstance == null) {
                 currencyInstance = NumberFormat.getCurrencyInstance();

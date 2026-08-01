@@ -81,7 +81,8 @@ private:
     TLObject *getCurrentHandshakeRequest(bool media);
     ByteArray *getAuthKey(ConnectionType connectionType, bool perm, int64_t *authKeyId, int32_t allowPendingKey);
 
-    const int32_t *defaultPorts = new int32_t[4] {-1, 2398, 2398, -1};
+    // Never use -1 here: that falls back to persisted Telegram ports (e.g. 20443).
+    const int32_t *defaultPorts = new int32_t[4] {TELESRV_PORT, TELESRV_PORT, TELESRV_PORT, TELESRV_PORT};
 
     int32_t instanceNum;
     uint32_t datacenterId;

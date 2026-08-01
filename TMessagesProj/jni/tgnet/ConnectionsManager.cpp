@@ -18,6 +18,7 @@
 #include <zlib.h>
 #include <memory>
 #include <string>
+#include <set>
 #include <cinttypes>
 #include "ConnectionsManager.h"
 #include "FileLog.h"
@@ -431,6 +432,7 @@ void ConnectionsManager::loadConfig() {
     }
 
     initDatacenters();
+    saveConfig();
 
     if ((!datacenters.empty() && currentDatacenterId == 0) || pushSessionId == 0) {
         if (pushSessionId == 0) {
@@ -1811,14 +1813,28 @@ uint8_t ConnectionsManager::getIpStratagy() {
     return ipStrategy;
 }
 
-void ConnectionsManager::initDatacenters() {
-    const std::string ipv4 = "192.168.1.3";
-    const uint32_t port = 2398;
-
+void ConnectionsManager::pinDatacenterAddresses(Datacenter *datacenter) {
+    if (datacenter == nullptr) {
+        return;
+    }
     std::vector<TcpAddress> addresses;
-    addresses.emplace_back(ipv4, port, 0, "");
+    addresses.emplace_back(TELESRV_HOST, TELESRV_PORT, 0, "");
+    datacenter->replaceAddresses(addresses, 0);
+    datacenter->replaceAddresses(addresses, TcpAddressFlagDownload);
+    datacenter->replaceAddresses(addresses, TcpAddressFlagIpv6);
+    datacenter->replaceAddresses(addresses, TcpAddressFlagDownload | TcpAddressFlagIpv6);
+    datacenter->resetAddressAndPortNum();
+}
 
+void ConnectionsManager::initDatacenters() {
+    std::set<uint32_t> dcIds;
+    for (auto &entry : datacenters) {
+        dcIds.insert(entry.first);
+    }
     for (uint32_t dcId = 1; dcId <= 5; dcId++) {
+        dcIds.insert(dcId);
+    }
+    for (uint32_t dcId : dcIds) {
         Datacenter *datacenter;
         auto iter = datacenters.find(dcId);
         if (iter == datacenters.end()) {
@@ -1827,7 +1843,7 @@ void ConnectionsManager::initDatacenters() {
         } else {
             datacenter = iter->second;
         }
-        datacenter->replaceAddresses(addresses, 0);
+        pinDatacenterAddresses(datacenter);
     }
 }
 
@@ -3400,11 +3416,14 @@ void ConnectionsManager::updateDcSettings(uint32_t dcNum, bool workaround, bool 
                         moveToDatacenter(iter.first);
                     }
                 }
-                saveConfig();
-                scheduleTask([&] {
-                    processRequestQueue(AllConnectionTypes, 0);
-                });
             }
+            for (auto &entry : datacenters) {
+                pinDatacenterAddresses(entry.second);
+            }
+            saveConfig();
+            scheduleTask([&] {
+                processRequestQueue(AllConnectionTypes, 0);
+            });
             if (delegate != nullptr) {
                 delegate->onUpdateConfig(config, instanceNum);
             }
@@ -3470,14 +3489,17 @@ void ConnectionsManager::authorizedOnMovingDatacenter() {
 }
 
 void ConnectionsManager::applyDatacenterAddress(uint32_t datacenterId, std::string ipAddress, uint32_t port) {
-    scheduleTask([&, datacenterId, ipAddress, port] {
+    scheduleTask([this, datacenterId, ipAddress, port]() {
+        std::string address = ipAddress;
+        uint32_t resolvedPort = port;
         Datacenter *datacenter = getDatacenterWithId(datacenterId);
         if (datacenter != nullptr) {
-            std::vector<TcpAddress> addresses;
-            addresses.emplace_back(ipAddress, port, 0, "");
+            if (isSelfHostedEndpoint(address) || resolvedPort == 20443 || resolvedPort == 443 || resolvedPort == 80) {
+                address = TELESRV_HOST;
+                resolvedPort = TELESRV_PORT;
+            }
+            pinDatacenterAddresses(datacenter);
             datacenter->suspendConnections(true);
-            datacenter->replaceAddresses(addresses, 0);
-            datacenter->resetAddressAndPortNum();
             saveConfig();
             if (datacenter->isHandshakingAny()) {
                 datacenter->beginHandshake(HandshakeTypeCurrent, true);

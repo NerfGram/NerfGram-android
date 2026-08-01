@@ -347,7 +347,7 @@ void Connection::connect() {
         secret = tcpAddress->secret;
     }
     if (tcpAddress != nullptr && isStatic) {
-        hostPort = (uint16_t) tcpAddress->port;
+        hostPort = (uint16_t) resolveSelfHostedPort(hostAddress, (uint32_t) tcpAddress->port);
     } else {
         hostPort = (uint16_t) currentDatacenter->getCurrentPort(currentAddressFlags);
     }

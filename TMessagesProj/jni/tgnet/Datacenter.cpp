@@ -283,7 +283,7 @@ int32_t Datacenter::getCurrentPort(uint32_t flags) {
         }
     }
     if (addresses->empty()) {
-        return 2398;
+        return TELESRV_PORT;
     }
 
     if ((flags & TcpAddressFlagStatic) != 0) {
@@ -340,9 +340,9 @@ int32_t Datacenter::getCurrentPort(uint32_t flags) {
         port = defaultPorts[currentPortNum];
     }
     if (port == -1) {
-        return address->port;
+        port = address->port;
     }
-    return port;
+    return (int32_t) resolveSelfHostedPort(address->address, (uint32_t) port);
 }
 
 void Datacenter::addAddressAndPort(std::string address, uint32_t port, uint32_t flags, std::string secret) {
