@@ -36,7 +36,7 @@
 #define USE_IPV4_IPV6_RANDOM 2
 
 // Self-hosted telesrv (must match TELESRV_LISTEN / TELESRV_ADVERTISE_IP on the server).
-#define TELESRV_HOST "192.168.1.3"
+#define TELESRV_HOST "95.165.0.162"
 #define TELESRV_PORT 2398
 
 inline bool isSelfHostedEndpoint(const std::string &host) {
