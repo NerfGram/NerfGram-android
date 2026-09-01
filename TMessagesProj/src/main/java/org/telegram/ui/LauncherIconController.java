@@ -34,12 +34,12 @@ public class LauncherIconController {
     }
 
     public enum LauncherIcon {
-        DEFAULT("DefaultIcon", R.drawable.fromgram_icon_background, R.drawable.fromgram_icon_plane_inset, R.string.AppIconDefault),
-        VINTAGE("VintageIcon", R.drawable.icon_6_background_sa, R.drawable.fromgram_icon_plane_inset, R.string.AppIconVintage),
-        AQUA("AquaIcon", R.drawable.icon_4_background_sa, R.drawable.fromgram_icon_plane_inset, R.string.AppIconAqua),
-        PREMIUM("PremiumIcon", R.drawable.icon_3_background_sa, R.drawable.fromgram_icon_plane_inset, R.string.AppIconPremium, true),
-        TURBO("TurboIcon", R.drawable.icon_5_background_sa, R.drawable.fromgram_icon_plane_inset, R.string.AppIconTurbo, true),
-        NOX("NoxIcon", R.mipmap.icon_2_background_sa, R.drawable.fromgram_icon_plane_inset, R.string.AppIconNox, true);
+        DEFAULT("DefaultIcon", R.drawable.nerfgram_icon_background, R.drawable.nerfgram_icon_plane_inset, R.string.AppIconDefault),
+        VINTAGE("VintageIcon", R.drawable.icon_6_background_sa, R.drawable.nerfgram_icon_plane_inset, R.string.AppIconVintage),
+        AQUA("AquaIcon", R.drawable.icon_4_background_sa, R.drawable.nerfgram_icon_plane_inset, R.string.AppIconAqua),
+        PREMIUM("PremiumIcon", R.drawable.icon_3_background_sa, R.drawable.nerfgram_icon_plane_inset, R.string.AppIconPremium, true),
+        TURBO("TurboIcon", R.drawable.icon_5_background_sa, R.drawable.nerfgram_icon_plane_inset, R.string.AppIconTurbo, true),
+        NOX("NoxIcon", R.mipmap.icon_2_background_sa, R.drawable.nerfgram_icon_plane_inset, R.string.AppIconNox, true);
 
         public final String key;
         public final int background;
